@@ -30,21 +30,51 @@
 
 ### Задание 2
 
-`Приведите ответ в свободной форме........`
-
-1. `Заполните здесь этапы выполнения, если требуется ....`
-2. `Заполните здесь этапы выполнения, если требуется ....`
-3. `Заполните здесь этапы выполнения, если требуется ....`
-4. `Заполните здесь этапы выполнения, если требуется ....`
-5. `Заполните здесь этапы выполнения, если требуется ....`
-6. 
-
+![Jobs Done](https://github.com/IthnHuitn/GitLab-HW/blob/main/jobs_succesfull.png) 
+![Test](https://github.com/IthnHuitn/GitLab-HW/blob/main/2test.png)
+![Static Analysis](https://github.com/IthnHuitn/GitLab-HW/blob/main/2static-analysis.png) 
+![Build](https://github.com/IthnHuitn/GitLab-HW/blob/main/2build.png)
 ```
 Поле для вставки кода...
-....
-....
-....
-....
+.gitlab-ci.yml
+stages:
+  - test
+  - static-analysis
+  - build
+
+variables:
+  SONAR_HOST_URL: "http://192.168.56.10:9000"
+
+test:
+  stage: test
+  image: golang:1.17
+  tags:
+    - docker
+  script: 
+    - go test .
+
+static-analysis:
+  stage: static-analysis
+  image:
+    name: sonarsource/sonar-scanner-cli
+    entrypoint: [""]
+  tags:
+    - docker
+  script:
+    - sonar-scanner -Dsonar.projectKey=my_repa -Dsonar.sources=. -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.token=$SONAR_TOKEN
+  allow_failure: true
+
+build:
+  stage: build
+  image: docker:latest
+  tags:
+    - docker
+  services:
+    - docker:dind
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  script:
+    - docker build .
 ```
 
 `При необходимости прикрепитe сюда скриншоты
